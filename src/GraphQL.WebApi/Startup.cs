@@ -1,8 +1,13 @@
+using GraphQL.WebApi.GraphQL.Extensions;
+using GraphQL.WebApi.Repository;
+using HotChocolate.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Web;
 
 namespace GraphQL.WebApi
 {
@@ -17,7 +22,11 @@ namespace GraphQL.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCustomGraphQL(Configuration);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(Configuration);
+            services.AddAuthorization();
+            services.AddSingleton<IBookRepository, BookRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -31,11 +40,17 @@ namespace GraphQL.WebApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL();
+                endpoints
+                    .MapGraphQL()
+                    .WithOptions(new GraphQLServerOptions
+                {
+                    Tool = { Enable = env.IsDevelopment()}
+                });
             });
         }
     }
