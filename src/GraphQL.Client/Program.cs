@@ -14,6 +14,10 @@ namespace Client.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureKestrel(opts =>
+                    {
+                        opts.ListenLocalhost(5500);
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

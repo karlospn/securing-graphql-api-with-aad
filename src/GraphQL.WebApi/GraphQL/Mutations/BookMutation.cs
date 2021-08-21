@@ -36,23 +36,23 @@ namespace GraphQL.WebApi.GraphQL.Mutations
             var errors = new List<string>();
 
             if (book.NumberOfPages <= 0)
-                errors.Add("Book pages cannot be zero or negative.");
+                errors.Add("Book pages cannot be zero or negative");
 
             if (book.Price <= 0)
-                errors.Add("Price cannot be zero or negative.");
+                errors.Add("Price cannot be zero or negative");
 
             if (string.IsNullOrEmpty(book.Author))
-                errors.Add("Author cannot be empty.");
+                errors.Add("Author cannot be empty");
 
             if(string.IsNullOrEmpty(book.Title))
-                errors.Add("Title cannot be empty.");
+                errors.Add("Title cannot be empt.");
 
             var books = repository.GetBookByAuthor(book.Author);
             if (books.Any(x => string.Equals(x.Title, 
                 book.Title, 
                 StringComparison.InvariantCultureIgnoreCase)))
             {
-                errors.Add("Book already exists.");
+                errors.Add("Book already exists");
             }
             
             return errors;
