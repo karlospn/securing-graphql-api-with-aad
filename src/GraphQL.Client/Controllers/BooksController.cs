@@ -79,5 +79,40 @@ namespace Client.WebApi.Controllers
             }
 
         }
+
+        [HttpPost]
+        public async Task<ActionResult> AddBook(
+            [FromBody] Book book)
+        {
+            try
+            {
+                var query = new GraphQLRequest
+                {
+                    Query = Queries.AddBook.Value,
+                    Variables = new
+                    {
+                        author = book.Author,
+                        pages = book.NumberOfPages,
+                        price = book.Price,
+                        title = book.Title
+                    }
+                };
+
+                var result = await _client.SendMutationAsync<AddBooksData>(query);
+
+                if (result.Errors != null && result.Errors.Any())
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+                return Ok(result.Data.Books);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Something went wrong", e);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+
+        }
     }
 }

@@ -1,26 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Client.WebApi.DTO
 {
-    public class GetBooksData
-    {
-        [JsonPropertyName("getBooks")]
-        public List<Book> Books { get; set; }
-    }
-
-    public class GetBooksByAuthorData
-    {
-        [JsonPropertyName("getBooksbyAuthor")]
-        public List<Book> Books { get; set; }
-    }
-
-
     public class Book
     {
+        [Required(AllowEmptyStrings = false)]
         public string Author { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
         public string Title { get; set; }
+        
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public double Price { get; set; }
+        
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Please enter a value bigger than {1}")]
         public int NumberOfPages { get; set; }
     }
 }
